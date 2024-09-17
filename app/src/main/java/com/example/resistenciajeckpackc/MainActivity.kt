@@ -98,7 +98,7 @@ fun resistenciajeckpackcApp() {
     }
 }
 
-// Mapa que asocia cada color con su valor hexadecimal
+// Mapa que asocia cada color con su respectivo valor hexadecimal
 val colorMap = mapOf(
     "Negro" to Color(0xFF000000),
     "Marrón" to Color(0xFFA52A2A),
@@ -218,7 +218,7 @@ fun calcularResistencia(banda1: String, banda2: String, banda3: String, toleranc
     // Obtiene el valor de la tolerancia
     val valorTolerancia = colorTolerancia[tolerancia]
 
-    // Retorna el resultado en Ω y la tolerancia
+    // Retorna el resultado en Ω y su tolerancia
     return if (valorTolerancia != null) {
         "$resultado Ω con una tolerancia de ±$valorTolerancia%" // Si la tolerancia es válida
     } else {
