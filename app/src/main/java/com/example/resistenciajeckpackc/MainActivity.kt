@@ -1,3 +1,8 @@
+/*
+    Aplicativo para calcular resintencia en ohmios por código de color.
+    Cain David Martinez Cardona
+    901N
+*/
 package com.example.resistenciajeckpackc
 
 import android.os.Bundle
