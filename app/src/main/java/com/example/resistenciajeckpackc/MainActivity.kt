@@ -14,79 +14,86 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.resistenciajeckpackc.ui.theme.TemaResistenciaC
 
+// Actividad principal de la aplicación que extiende ComponentActivity
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            // Aplicar el tema personalizado aquí
+            // Aplicar el tema personalizado al iniciar la interfaz de la aplicación
             TemaResistenciaC {
-                resistenciajeckpackcApp()
+                resistenciajeckpackcApp() // Composable que maneja la interfaz principal de la aplicación
             }
         }
     }
 }
 
+// Función composable que representa la aplicación de cálculo de resistencias
 @Composable
 fun resistenciajeckpackcApp() {
-    var banda1 by remember { mutableStateOf("Marrón") }
-    var banda2 by remember { mutableStateOf("Negro") }
-    var banda3 by remember { mutableStateOf("Rojo") }
-    var tolerancia by remember { mutableStateOf("Dorado") }
-    var resultado by remember { mutableStateOf("") }
+    // Variables de estado que almacenan los valores seleccionados para cada banda de color
+    var banda1 by remember { mutableStateOf("Marrón") } // Primera banda de color
+    var banda2 by remember { mutableStateOf("Negro") }  // Segunda banda de color
+    var banda3 by remember { mutableStateOf("Rojo") }   // Tercera banda (multiplicador)
+    var tolerancia by remember { mutableStateOf("Dorado") } // Tolerancia de la resistencia
+    var resultado by remember { mutableStateOf("") }    // Resultado del cálculo
 
+    // Opciones de colores para las bandas
     val colorOptions = listOf("Negro", "Marrón", "Rojo", "Naranja", "Amarillo", "Verde", "Azul", "Violeta", "Gris", "Blanco")
+    // Opciones de tolerancia
     val toleranciaOptions = listOf("Dorado", "Plateado", "Marrón", "Rojo", "Verde", "Azul", "Violeta", "Gris")
 
+    // Función que calcula la resistencia en base a los valores seleccionados
     fun calcular() {
         resultado = calcularResistencia(banda1, banda2, banda3, tolerancia)
     }
 
+    // Definición de la interfaz de usuario
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize() // Toma todo el espacio disponible
+            .padding(16.dp), // Añade margen de 16dp alrededor del contenido
+        verticalArrangement = Arrangement.spacedBy(16.dp), // Espaciado entre elementos de la columna
+        horizontalAlignment = Alignment.CenterHorizontally // Alineación horizontal al centro
     ) {
+        // Título de la aplicación
         Text(
             text = "Calculadora de Resistencias",
             style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary // Color de texto basado en el tema
         )
 
-        // Selección de bandas de colores
+        // Composables que permiten seleccionar los colores de las bandas
         ColorDropdown("Banda 1", colorOptions, banda1) { newValue ->
-            banda1 = newValue
-            calcular()
+            banda1 = newValue // Actualiza la banda 1
+            calcular() // Recalcula el valor de la resistencia
         }
         ColorDropdown("Banda 2", colorOptions, banda2) { newValue ->
-            banda2 = newValue
+            banda2 = newValue // Actualiza la banda 2
             calcular()
         }
         ColorDropdown("Banda 3 (Multiplicador)", colorOptions, banda3) { newValue ->
-            banda3 = newValue
+            banda3 = newValue // Actualiza la banda 3 (multiplicador)
             calcular()
         }
 
-        // Selección de tolerancia
+        // Selección de la tolerancia
         ColorDropdown("Tolerancia", toleranciaOptions, tolerancia) { newValue ->
-            tolerancia = newValue
+            tolerancia = newValue // Actualiza la tolerancia
             calcular()
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Añade un espacio entre las secciones
 
-        // Mostrar el resultado
+        // Mostrar el resultado del cálculo
         Text(
-            text = "El Resultado es = $resultado",
+            text = "El Resultado es = $resultado", // Muestra el resultado calculado
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
     }
-
 }
 
-// Mapa de colores asociados a sus valores hexadecimales
+// Mapa que asocia cada color con su valor hexadecimal
 val colorMap = mapOf(
     "Negro" to Color(0xFF000000),
     "Marrón" to Color(0xFFA52A2A),
@@ -102,23 +109,26 @@ val colorMap = mapOf(
     "Plateado" to Color(0xFFC0C0C0)
 )
 
+// Composable para mostrar un menú desplegable de selección de color
 @Composable
 fun ColorDropdown(label: String, items: List<String>, selectedItem: String, onItemSelected: (String) -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) } // Estado que controla si el menú está expandido
 
     Box(modifier = Modifier.fillMaxWidth()) {
+        // Campo de texto donde se muestra el valor seleccionado
         TextField(
             value = selectedItem,
-            onValueChange = {},
-            label = { Text(label) },
-            readOnly = true,
+            onValueChange = {}, // No cambia el valor directamente en el campo
+            label = { Text(label) }, // Etiqueta del campo
+            readOnly = true, // El campo es de solo lectura
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { expanded = true }
+                .clickable { expanded = true } // Expande el menú cuando se hace clic
         )
+        // Menú desplegable que contiene las opciones de color
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false } // Cierra el menú si se hace clic fuera de él
         ) {
             items.forEach { item ->
                 DropdownMenuItem(
@@ -127,19 +137,19 @@ fun ColorDropdown(label: String, items: List<String>, selectedItem: String, onIt
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(4.dp)
                         ) {
-                            // Cuadro de color
+                            // Cuadro de color correspondiente a cada opción
                             Box(
                                 modifier = Modifier
                                     .size(16.dp)
-                                    .background(colorMap[item] ?: Color.Transparent)
+                                    .background(colorMap[item] ?: Color.Transparent) // Asocia el color del mapa
                                     .padding(end = 8.dp)
                             )
-                            Text(text = item)
+                            Text(text = item) // Muestra el nombre del color
                         }
                     },
                     onClick = {
-                        onItemSelected(item)
-                        expanded = false
+                        onItemSelected(item) // Actualiza el valor seleccionado cuando se elige un color
+                        expanded = false // Cierra el menú
                     }
                 )
             }
@@ -147,7 +157,9 @@ fun ColorDropdown(label: String, items: List<String>, selectedItem: String, onIt
     }
 }
 
+// Función que calcula el valor de la resistencia en base a los colores seleccionados
 fun calcularResistencia(banda1: String, banda2: String, banda3: String, tolerancia: String?): String {
+    // Mapa que asocia cada color con su valor correspondiente
     val colorValor = mapOf(
         "Negro" to 0,
         "Marrón" to 1,
@@ -161,6 +173,7 @@ fun calcularResistencia(banda1: String, banda2: String, banda3: String, toleranc
         "Blanco" to 9
     )
 
+    // Mapa que asocia cada color con su valor de multiplicador
     val colorMultiplicador = mapOf(
         "Negro" to 1,
         "Marrón" to 10,
@@ -176,6 +189,7 @@ fun calcularResistencia(banda1: String, banda2: String, banda3: String, toleranc
         "Plateado" to 0.01
     )
 
+    // Mapa que asocia cada color con su valor de tolerancia
     val colorTolerancia = mapOf(
         "Marrón" to 1,
         "Rojo" to 2,
@@ -187,16 +201,22 @@ fun calcularResistencia(banda1: String, banda2: String, banda3: String, toleranc
         "Plateado" to 10
     )
 
+    // Calcula el valor de la resistencia basado en las dos primeras bandas
     val valor1 = colorValor[banda1] ?: 0
     val valor2 = colorValor[banda2] ?: 0
-    val valorResistencia = (valor1 * 10 + valor2)
+    val valorResistencia = (valor1 * 10 + valor2) // Valor de las dos primeras bandas
+
+    // Multiplica por el valor de la tercera banda (multiplicador)
     val multiplicador = colorMultiplicador[banda3] ?: 1
-    val resultado = valorResistencia * multiplicador.toDouble()
+    val resultado = valorResistencia * multiplicador.toDouble() // Valor final de la resistencia
+
+    // Obtiene el valor de la tolerancia
     val valorTolerancia = colorTolerancia[tolerancia]
 
+    // Retorna el resultado en Ω y la tolerancia
     return if (valorTolerancia != null) {
-        "$resultado Ω con una tolerancia de ±$valorTolerancia%"
+        "$resultado Ω con una tolerancia de ±$valorTolerancia%" // Si la tolerancia es válida
     } else {
-        "$resultado Ω sin tolerancia especificada"
+        "$resultado Ω sin tolerancia especificada" // Si no se especificó tolerancia
     }
 }
